@@ -7,7 +7,10 @@ on:
    branches: [main, master]
  pull_request:
    branches: [main, master]
-
+permissions:
+    contents: read
+    checks: write
+    id-token: write
 jobs:
  run-tests:
    timeout-minutes: 5
@@ -23,3 +26,8 @@ jobs:
        run: npx playwright install --with-deps
      - name: Run Playwright tests
        run: npm run test
+     - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v5
+        if: success() || failure()
+        with:
+          report_paths: "./playwright-report/results.xml"
